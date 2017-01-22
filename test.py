@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 temp = np.ones((2, 4))
 
-
 N = 100
 
 X1 = np.linspace(0, 100, num=N)
@@ -19,11 +18,16 @@ noise = st.norm.rvs(0, 1, size=N)
 noise = noise[:, np.newaxis]
 
 y = 86 * X1 - 7 * X2 + noise
+y = y.reshape(N)
+
 clf = LinearRegression()
-clf.fit(X, y[:,0])
+
+clf.fit(X, y)
+
+
 y_pred = clf.predict(X)
 
-print(clf.coef_)
+print(clf.coef)
 print(y_pred[1:10])
 print(y[1:10])
 
