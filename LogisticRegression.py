@@ -1,26 +1,19 @@
 import numpy as np
 from utils import *
 
+
 def sigmoid(x):
     return 1. / (1 + np.exp(-x))
 
+
 def mse(x, y):
-    return np.mean((x-y)**2)
-
-def compute_grad(f, a, h):
-    dim = a.shape[0]
-    grad = np.zeros((dim,1))
-    epsilon = np.zeros((dim,1))
-
-    for i in range(dim):
-        epsilon[i] = h
-        grad[i] = (f(a + epsilon) - f(a - epsilon)) / (2 * h)
-        epsilon[i] = 0
-    return grad
+    return np.mean((x - y)**2)
 
 
 class LogisticRegression(object):
-    """Logistic Regression"""
+    """
+    Logistic Regression
+    """
     def __init__(self):
         super(LogisticRegression, self).__init__()
 
@@ -35,25 +28,27 @@ class LogisticRegression(object):
         self.design[:, 1:] = X
 
         tol = 1e-6
-        tol_it = 10
-        epsilon = 1e-3
+
         step = 1
-        self.coef_ = np.random.normal(size=self.n_param, scale = 0.1)
-        self.coef_ = self.coef_[:,np.newaxis]
+        self.coef_ = np.random.normal(size=self.n_param, scale=0.1)
+        self.coef_ = self.coef_[:, np.newaxis]
         grad = 1
         i = 0
-        j = 0
         momentum = 0
 
         score = self.score(X, y)
         diff_score = 1
+
         def objective(x):
             logit = np.matmul(self.design, x)
             return mse(sigmoid(logit), y)
 
         while abs(diff_score) > tol:
-            grad = compute_grad(objective, self.coef_, epsilon)
-            new_coef = self.coef_ - grad * step + 0.95*momentum
+
+            logit = np.matmul(self.design, self.coef_)
+            sigm = sigmoid(logit)
+            grad = np.sum((y - sigm) * sigm * (1 - sigm) * self.design, axis=0)
+            new_coef = self.coef_ - grad * step + 0.95 * momentum
             momentum = new_coef - self.coef_
             self.coef_ = new_coef
 
@@ -62,15 +57,10 @@ class LogisticRegression(object):
             score = new_score
             if diff_score > 0:
                 step = step / 2
-                print("New step", step)
 
-            if i%1000 == 0:
-                print(diff_score, self.score(X, y))
             i += 1
             self.grad = grad
-            #print(np.sqrt(np.sum(grad**2)), step)
 
-        print(i," iterations", grad, step, self.score(X, y))
         self.mse = self.score(X, y)
 
 
@@ -87,6 +77,3 @@ class LogisticRegression(object):
         if pred.shape != y.shape:
             pred = pred.reshape(y.shape)
         return mse(pred, y)
-
-
-

@@ -37,12 +37,15 @@ N = 100
 
 X = np.linspace(0,100, num=N)
 y = np.concatenate([np.ones(N//2), np.zeros(N//2)])
-
-X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
+mean = np.mean(X, axis=0)
+std = np.std(X, axis=0)
+X = (X - mean) / std
 
 clf = LogisticRegression()
 
 clf.fit(X, y)
+
+print(clf.predict((np.array([1, 2, 49, 50, 51, 100]) - mean) / std))
 
 #mat = []
 #for i in np.linspace(-0.1,0.1):
