@@ -63,13 +63,11 @@ class LogisticRegression(object):
 
         self.mse = self.score(X, y)
 
-
     def predict(self, X):
         X = check_transform(X)
 
         intercept = np.ones((X.shape[0], 1))
         new_X = np.concatenate([intercept, X], axis=1)
-        #new_coef = self.coef_.reshape(self.coef_.shape[0], 1)
         return sigmoid(np.matmul(new_X, self.coef_))[:, 0]
 
     def score(self, X, y):

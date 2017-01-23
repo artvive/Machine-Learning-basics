@@ -5,6 +5,7 @@ Created on Tue Dec 20 12:41:26 2016
 
 @author: arthur
 """
+
 import numpy as np
 from sklearn.metrics import log_loss
 
@@ -47,7 +48,6 @@ class DecisionTree(object):
         n_feat = X.shape[1]
         ent = entropy(y)
         if n_samples < self.min_samples_split or ent >= 0:
-            print("Leaf")
             return ["Leaf", most_probable_value(y), ent]
 
         best = ent
@@ -56,31 +56,19 @@ class DecisionTree(object):
 
         for i in range(n_feat):
             x_temp = np.unique(X[:, i])
-            #x_temp = np.linspace(X[:, i].min(), X[:, i].max(), num=X.shape[0])
             for j in range(x_temp.shape[0] - 1):
-                #y_left = y[X[:, i] < x_temp[j+1]]
-                #y_right = y[X[:, i] > x_temp[j]]
-                #n_l = y_left.shape[0]
-                #n_r = y_right.shape[0]
-                #val = (n_r * x_temp[j] + n_l * x_temp[j + 1]) / (n_l+n_r)
-                val = (x_temp[j] + x_temp[j+1]) / 2
+                val = (x_temp[j] + x_temp[j + 1]) / 2
                 score = score_split(X[:, i], y, val)
                 if score > best:
                     best = score
                     best_val = val
                     best_feat = i
 
-        if ent == best:
-            print("Leaf")
-            return ["Leaf", most_probable_value(y), ent]
-
         mask = X[:, best_feat] <= best_val
         left_y = y[mask]
         right_y = y[np.logical_not(mask)]
         left_X = X[mask, :]
         right_X = X[np.logical_not(mask), :]
-
-        print(best, y.shape[0], best_val, best_feat, left_y.shape[0])
 
         return [[best_feat, best_val],
                 self.trainTree(left_X, left_y),
@@ -114,24 +102,27 @@ class DecisionTree(object):
     def capacity(self):
         return capacity(self.tree)
 
+
 def capacity(tree):
     if tree[0] == "Leaf":
             return 1
-    feat = tree[0][0]
-    val = tree[0][1]
     return 1 + capacity(tree[1]) + capacity(tree[2])
+
 
 if __name__ == "__main__":
     N = 100
 
     X = np.linspace(0, 100, num=N)
     X = X[:, np.newaxis]
-    y = np.concatenate([np.ones(N//2), np.zeros(N//2)])
+    y = np.concatenate([np.ones(N // 2), np.zeros(N // 2)])
     clf = DecisionTree()
     clf.fit(X, y)
-    print(clf.score(X, y))
+    print("(Accuracy, log loss)")
+    print("Score on toy data set: ", clf.score(X, y))
 
     from sklearn.datasets import load_digits
+
+    print("Mnist dataset:")
     df = load_digits()
 
     X = df['data']
@@ -149,11 +140,13 @@ if __name__ == "__main__":
 
     clf = DecisionTree()
     clf.fit(X, y)
-    print(clf.score(X, y))
-    print(clf.score(X_test, y_test))
+
+    print("Train score (our implementation): ", clf.score(X, y))
+    print("Test score (our implementation): ", clf.score(X_test, y_test))
     from sklearn.tree import DecisionTreeClassifier
     clf2 = DecisionTreeClassifier(criterion="entropy")
     clf2.fit(X, y)
-    print(clf2.score(X, y), log_loss(y, clf2.predict_proba(X)))
-    print(clf2.score(X_test, y_test),
+    print("Train score (sklearn): ", clf2.score(X, y),
+          log_loss(y, clf2.predict_proba(X)))
+    print("Train score (sklearn): ", clf2.score(X_test, y_test),
           log_loss(y_test, clf2.predict_proba(X_test)))
