@@ -1,5 +1,5 @@
 import numpy as np
-from utils import *
+from utils import check_transform
 
 
 def sigmoid(x):

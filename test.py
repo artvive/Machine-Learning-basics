@@ -1,6 +1,5 @@
 import scipy.stats as st
 import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.metrics import log_loss
 from sklearn.tree import DecisionTreeClassifier
 
@@ -8,8 +7,9 @@ from LogisticRegression import LogisticRegression
 from DecisionTree import DecisionTree
 from LinearRegression import LinearRegression
 
+from sklearn.datasets import load_digits
 
-#Linear Regression
+# Linear Regression
 print("LINEAR REGRESSION TESTS")
 
 temp = np.ones((2, 4))
@@ -39,7 +39,7 @@ print("Regression coefs: ", clf.coef)
 print("Predictions: ", y_pred[1:10])
 print("True values: ", y[1:10])
 
-# %% Logistic Regression
+# Logistic Regression
 print("\nLOGISTIC REGRESSION TESTS")
 N = 100
 
@@ -70,8 +70,6 @@ clf = DecisionTree()
 clf.fit(X, y)
 print("(Accuracy, log loss)")
 print("Score on toy data set: ", clf.score(X, y))
-
-from sklearn.datasets import load_digits
 
 print("Mnist dataset:")
 df = load_digits()

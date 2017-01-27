@@ -5,7 +5,7 @@ from utils import *
 class LinearRegression(object):
     """
     Linear Regression:
-
+    - TODO: QR decomposition to improve numerical stability
     """
     def __init__(self):
         super(LinearRegression, self).__init__()
