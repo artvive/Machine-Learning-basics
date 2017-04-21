@@ -6,8 +6,12 @@ from sklearn.tree import DecisionTreeClassifier
 from LogisticRegression import LogisticRegression
 from DecisionTree import DecisionTree
 from LinearRegression import LinearRegression
+from GaussianMixture import GaussianMixture
+from K_means import KMeans
 
-from sklearn.datasets import load_digits
+from sklearn.datasets import load_digits, load_iris
+
+import matplotlib.pyplot as plt
 
 # Linear Regression
 print("LINEAR REGRESSION TESTS")
@@ -84,8 +88,9 @@ n_test = N // 10
 X_test = X[perm[:n_test]]
 y_test = y[perm[:n_test]]
 
-X = X[perm[n_test:]]
-y = y[perm[n_test:]]
+n_train = 1000
+X = X[perm[n_test:n_test + n_train]]
+y = y[perm[n_test:n_test + n_train]]
 
 clf = DecisionTree()
 clf.fit(X, y)
@@ -99,3 +104,29 @@ print("Train score (sklearn): ", (clf2.score(X, y),
       log_loss(y, clf2.predict_proba(X))))
 print("Train score (sklearn): ", (clf2.score(X_test, y_test),
       log_loss(y_test, clf2.predict_proba(X_test))))
+
+print("\n MIXTURE OF GAUSSIAN TESTS")
+
+
+def plot_classes(x, means, classes):
+    plt.scatter(x[:, 0], x[:, 1], c=classes)
+    plt.scatter(means[:, 0], means[:, 1], c='r', s=30)
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.show()
+
+
+x, classes = load_iris(True)
+
+gm = GaussianMixture(3)
+mu, sigma, p = gm.fit(x)
+classes = np.argmax(p, axis=1)
+plot_classes(x, mu, classes)
+print(mu)
+print("\n K_MEANS TESTS")
+
+x, classes = load_iris(True)
+km = KMeans(3)
+means, classes, hist = km.fit(x)
+plot_classes(x, means, classes)
+print(means)
