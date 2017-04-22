@@ -28,7 +28,6 @@ class GaussianMixture(object):
         mu = mu / np.transpose(np.sum(p, axis=0, keepdims=True))
 
         sigma = x.reshape(1, -1, dim) - mu.reshape(-1, 1, dim)
-        #  print(sigma.shape)
         sigma = np.matmul(sigma.reshape(self.k, -1, dim, 1),
                           sigma.reshape(self.k, -1, 1, dim))
         sigma = p.transpose((1, 0)).reshape(self.k, -1, 1, 1) * sigma

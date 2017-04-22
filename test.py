@@ -8,6 +8,9 @@ from DecisionTree import DecisionTree
 from LinearRegression import LinearRegression
 from GaussianMixture import GaussianMixture
 from K_means import KMeans
+from Isomap import Isomap
+from PCA import PCA
+from LLE import LocallyLinearEmbedding
 
 from sklearn.datasets import load_digits, load_iris
 
@@ -130,3 +133,31 @@ km = KMeans(3)
 means, classes, hist = km.fit(x)
 plot_classes(x, means, classes)
 print(means)
+
+print("\n PCA TESTS")
+
+x = df['data']
+y = df['target']
+n_train = 1000
+perm = np.random.permutation(x.shape[0])
+x = x[perm[:n_train]]
+y = y[perm[:n_train]]
+
+pca = PCA(n_components=2)
+x_transf = pca.fit_transform(x)
+plt.scatter(x_transf[:, 0], x_transf[:, 1], c=y)
+plt.show()
+
+print("\n ISOMAP TESTS")
+
+iso = Isomap(n_components=2, n_neighbors=10)
+x_transf = iso.fit_transform(x)
+plt.scatter(x_transf[:, 0], x_transf[:, 1], c=y)
+plt.show()
+
+print("\n LLE TESTS")
+
+lle = LocallyLinearEmbedding(n_components=2, n_neighbors=10)
+x_transf = lle.fit_transform(x)
+plt.scatter(x_transf[:, 0], x_transf[:, 1], c=y)
+plt.show()
